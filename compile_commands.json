@@ -1,0 +1,27 @@
+[
+{
+  "directory": "/home/cailen/Projects/VoxelVolumeRayCaster/build",
+  "command": "/usr/bin/c++  -I/home/cailen/Projects/VoxelVolumeRayCaster/headers -isystem /usr/include/opencv4  -o CMakeFiles/RayCaster.dir/main.cpp.o -c /home/cailen/Projects/VoxelVolumeRayCaster/main.cpp",
+  "file": "/home/cailen/Projects/VoxelVolumeRayCaster/main.cpp"
+},
+{
+  "directory": "/home/cailen/Projects/VoxelVolumeRayCaster/build",
+  "command": "/usr/bin/c++  -I/home/cailen/Projects/VoxelVolumeRayCaster/headers -isystem /usr/include/opencv4  -o CMakeFiles/RayCaster.dir/src/Projection.cpp.o -c /home/cailen/Projects/VoxelVolumeRayCaster/src/Projection.cpp",
+  "file": "/home/cailen/Projects/VoxelVolumeRayCaster/src/Projection.cpp"
+},
+{
+  "directory": "/home/cailen/Projects/VoxelVolumeRayCaster/build",
+  "command": "/usr/bin/c++  -I/home/cailen/Projects/VoxelVolumeRayCaster/headers -isystem /usr/include/opencv4  -o CMakeFiles/RayCaster.dir/src/Source.cpp.o -c /home/cailen/Projects/VoxelVolumeRayCaster/src/Source.cpp",
+  "file": "/home/cailen/Projects/VoxelVolumeRayCaster/src/Source.cpp"
+},
+{
+  "directory": "/home/cailen/Projects/VoxelVolumeRayCaster/build",
+  "command": "/usr/bin/c++  -I/home/cailen/Projects/VoxelVolumeRayCaster/headers -isystem /usr/include/opencv4  -o CMakeFiles/RayCaster.dir/src/SphereVolume.cpp.o -c /home/cailen/Projects/VoxelVolumeRayCaster/src/SphereVolume.cpp",
+  "file": "/home/cailen/Projects/VoxelVolumeRayCaster/src/SphereVolume.cpp"
+},
+{
+  "directory": "/home/cailen/Projects/VoxelVolumeRayCaster/build",
+  "command": "/usr/bin/c++  -I/home/cailen/Projects/VoxelVolumeRayCaster/headers -isystem /usr/include/opencv4  -o CMakeFiles/RayCaster.dir/src/VolexVolume.cpp.o -c /home/cailen/Projects/VoxelVolumeRayCaster/src/VolexVolume.cpp",
+  "file": "/home/cailen/Projects/VoxelVolumeRayCaster/src/VolexVolume.cpp"
+}
+]
