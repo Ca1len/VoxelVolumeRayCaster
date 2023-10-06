@@ -1,35 +1,33 @@
 #pragma once
 
 #include <cstddef>
+#include <cstdint>
 #include <opencv2/core/matx.hpp>
 #include <vector>
 
 
-template <typename VoxelValueType, size_t FirstDimSize, size_t SecondDimSize>
-struct Array2D {
-  Array2D();
-  Array2D(const Array2D &) = delete;
-  Array2D(Array2D &&) = delete;
-  Array2D &operator=(const Array2D &) = delete;
-  Array2D &operator=(Array2D &&) = delete;
+template <typename VoxelValueType=int16_t, size_t XDimension=512,
+          size_t YDimension=512, size_t ZDimension=512>
+struct Parallelepiped {
+    struct Index{
+        size_t i{};
+        size_t j{};
+        size_t k{};
+    };
+    Parallelepiped();
+    const std::vector<size_t> shape{XDimension, YDimension, ZDimension};
+    private:
+    std::vector<VoxelValueType> array{XDimension*YDimension*ZDimension, 0};
 
-  std::vector<size_t> shape{FirstDimSize, SecondDimSize};
-private:
-  std::vector<std::vector<VoxelValueType>> array;
+    // (xd * yd) * z + (xd) * y + x
+    // xd * (yd * z + y) + x
+    VoxelValueType operator[](const Index& idx){
+        auto calcIdx = shape[0] * (shape[1] * idx.k + idx.j) + idx.i;
+        if (calcIdx >= array.size())
+            throw "Out of range";
+        return array[calcIdx];
+    }
 };
-
-template <typename VoxelValueType> struct Array3D {
-  Array3D();
-  Array3D(const Array3D &) = delete;
-  Array3D(Array3D &&) = delete;
-  Array3D &operator=(const Array3D &) = delete;
-  Array3D &operator=(Array3D &&) = delete;
-
-private:
-  std::vector<std::vector<VoxelValueType>> array;
-};
-
-template <typename VoxelValueType> struct Parellelepiped {};
 
 class VoxelVolume {
 public:
