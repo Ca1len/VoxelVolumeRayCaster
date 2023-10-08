@@ -1,4 +1,4 @@
-#include "VoxelVolume.h"
+#include <VoxelVolume.h>
 #include <SphereVolume.h>
 
 
@@ -23,8 +23,7 @@ SphereVolume::SphereVolume(size_t IDimension, size_t JDimension,
   for (size_t i = 0; i < parallelepiped_->shape_.nx; ++i) {
     for (size_t j = 0; j < parallelepiped_->shape_.ny; ++j) {
       for (size_t k = 0; k < parallelepiped_->shape_.nz; ++k) {
-        auto temp = IDXtoXYZ_ * cv::Vec4f(i, j, k, 1);
-        cv::Vec4f xyz{temp[0], temp[1], temp[2]};
+        auto xyz = IDXtoXYZ_ * cv::Vec4f(i, j, k, 1);
         if (cv::norm(xyz - xyz_c) < radius_) {
           (*parallelepiped_)[{i, j, k}] = ball_value;
         }
