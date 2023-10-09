@@ -56,6 +56,8 @@ struct VoxelVolume {
       delete parallelepiped_;
   };
   virtual float p(float x, float y, float z) { return 0; };
+  virtual float p(float x, float y, float z) const { return 0; };
+  virtual const cv::Matx44f& getIJKtoXYZ() const = 0;
 
   struct PixelSpacing {
     float sx{};
