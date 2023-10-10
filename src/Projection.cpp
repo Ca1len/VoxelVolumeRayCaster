@@ -4,6 +4,7 @@
 #include <deque>
 #include <mutex>
 #include <new>
+#include <opencv2/core.hpp>
 #include <opencv2/core/base.hpp>
 #include <opencv2/core/cvdef.h>
 #include <opencv2/core/matx.hpp>
@@ -49,20 +50,21 @@ getInterestVoxels(const VoxelVolume &volume, const Ray &ray) {
   auto ijk_s_t = XYZtoIDX * xyz_source;
   auto ijk_d_t = XYZtoIDX * xyz_dest;
   cv::Vec3f ijk_source{
-      (ijk_s_t[0] < ijk_d_t[0]) ? ijk_s_t[0] : ijk_d_t[0],
-      (ijk_s_t[1] < ijk_d_t[1]) ? ijk_s_t[1] : ijk_d_t[1],
-      (ijk_s_t[2] < ijk_d_t[2]) ? ijk_s_t[2] : ijk_d_t[2],
+      std::ceil((ijk_s_t[0] < ijk_d_t[0]) ? ijk_s_t[0] : ijk_d_t[0]),
+      std::ceil((ijk_s_t[1] < ijk_d_t[1]) ? ijk_s_t[1] : ijk_d_t[1]),
+      std::ceil((ijk_s_t[2] < ijk_d_t[2]) ? ijk_s_t[2] : ijk_d_t[2]),
   };
   cv::Vec3f ijk_dest{
-      (ijk_s_t[0] > ijk_d_t[0]) ? ijk_s_t[0] : ijk_d_t[0],
-      (ijk_s_t[1] > ijk_d_t[1]) ? ijk_s_t[1] : ijk_d_t[1],
-      (ijk_s_t[2] > ijk_d_t[2]) ? ijk_s_t[2] : ijk_d_t[2],
+      std::floor((ijk_s_t[0] > ijk_d_t[0]) ? ijk_s_t[0] : ijk_d_t[0]),
+      std::floor((ijk_s_t[1] > ijk_d_t[1]) ? ijk_s_t[1] : ijk_d_t[1]),
+      std::floor((ijk_s_t[2] > ijk_d_t[2]) ? ijk_s_t[2] : ijk_d_t[2]),
   };
 
-  for (float i = (float)ijk_source[0]; i < (float)ijk_dest[0]; ++i) {
-    for (float j = (float)ijk_source[1]; j < (float)ijk_dest[1]; ++j) {
-      for (float k = (float)ijk_source[2]; k < (float)ijk_dest[2]; ++k) {
-        Parallelepiped::Index idx{(size_t)i, (size_t)j, (size_t)k};
+
+  for (size_t i = ijk_source[0]; i < ijk_dest[0]; ++i) {
+    for (size_t j = ijk_source[1]; j < ijk_dest[1]; ++j) {
+      for (size_t k = ijk_source[2]; k < ijk_dest[2]; ++k) {
+        Parallelepiped::Index idx{i, j, k};
         if ((*pp)[idx] != 0) {
           res.push_back(std::move(idx));
         }
@@ -168,6 +170,11 @@ cv::Mat Projection::compute(const VoxelVolume &volume, const Source &source) {
       }
     }
   }
+  double min, max;
+  cv::minMaxLoc(img, &min, &max);
+  img = (img - min) / (max - min) * 255;
+  cv::Mat out_img(cv::Mat::zeros(resolution_.py, resolution_.px, CV_8U));
+  img.convertTo(out_img, CV_8U);
   return img;
 }
 
