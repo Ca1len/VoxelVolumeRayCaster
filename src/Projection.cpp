@@ -93,6 +93,7 @@ static inline std::deque<Parallelepiped::Index> getIntersectedVoxels(
                            static_cast<float>(dest_voxel_idx.j + 1),
                            static_cast<float>(dest_voxel_idx.k + 1)}};
 
+#if 0
         if (std::isinf(ijk_ray.inv_direction[0])) {
 
             if (std::isinf(ijk_ray.inv_direction[1])) {
@@ -143,6 +144,7 @@ static inline std::deque<Parallelepiped::Index> getIntersectedVoxels(
                            static_cast<uint16_t>(dest_voxel_idx.j),
                            static_cast<uint16_t>(dest_voxel_idx.k - 1)});
         }
+#endif
 
         auto source_segment = source_voxel_bb.intersect(ray, 0, 1);
         auto dest_segment = dest_voxel_bb.intersect(ray, 0, 1);
@@ -177,7 +179,7 @@ static inline std::deque<Parallelepiped::Index> getInterestVoxels(
     return res;
 }
 
-#if 0
+#if 1
 static std::deque<Parallelepiped::Index> interestIndexes;
 #endif
 
@@ -188,7 +190,7 @@ static inline float transparency_integral(const VoxelVolume& volume,
     auto& volume_shape = pp->shape_;
     auto& spacing = volume.pixelSpacing_;
     auto& IDXtoXYZ = volume.getIJKtoXYZ();
-    auto interestIndexes = getIntersectedVoxels(volume, ray);
+    // auto interestIndexes = getIntersectedVoxels(volume, ray);
 
 #if 1
     for (const auto& idx : interestIndexes) {
@@ -293,7 +295,7 @@ cv::Mat Projection::compute(const VoxelVolume& volume, const Source& source) {
     cv::Mat img(cv::Mat::zeros(resolution_.py, resolution_.px, CV_32F));
     cv::Vec3f source_point{source.x_src, source.y_src, source.z_src};
     static std::mutex img_mutex;
-#if 0
+#if 1
     interestIndexes = getInterestVoxels(volume);
 #endif 
     auto foo = [&](float i, float j) {
@@ -324,8 +326,8 @@ cv::Mat Projection::compute(const VoxelVolume& volume, const Source& source) {
     double min, max;
     cv::minMaxLoc(img, &min, &max);
     img = (img - min) / (max - min) * 255;
-    cv::Mat out_img(cv::Mat::zeros(resolution_.py, resolution_.px, CV_8U));
-    img.convertTo(out_img, CV_8U);
+    // cv::Mat out_img(cv::Mat::zeros(resolution_.py, resolution_.px, CV_8U));
+    // img.convertTo(out_img, CV_8U);
 #endif
     return img;
 }
@@ -338,42 +340,42 @@ Box::Segment Box::intersect(const Ray& r, float t0, float t1) const {
     tymax = (bounds[1 - r.sign[1]][1] - r.origin[1]) * r.inv_direction[1];
     tzmin = (bounds[r.sign[2]][2] - r.origin[2]) * r.inv_direction[2];
     tzmax = (bounds[1 - r.sign[2]][2] - r.origin[2]) * r.inv_direction[2];
-    if (std::isinf(tmin)) {
-        if (std::isinf(tymin)) {
-            tmin = tzmin;
-            tmax = tzmax;
-            if ((tmin < t1) && (tmax > t0)) return {tmin, tmax};
-            // tymin = tzmin;
-            // tymax = tzmax;
-        } else {
-            tmin = tymin;
-            tmax = tymax;
-        }
-        if (std::isinf(tzmin)) {
-            tmin = tymin;
-            tmax = tymax;
-            if ((tmin < t1) && (tmax > t0)) return {tmin, tmax};
-            // tzmin = tymin;
-            // tzmax = tymax;
-        } else {
-            tmin = tzmin;
-            tmax = tzmax;
-        }
-    } else {
-        if (std::isinf(tymin)) {
-            tymin = tmin;
-            tymax = tmax;
-            if (std::isinf(tzmin)) {
-                tzmin = tmin;
-                tzmax = tmax;
-                if ((tmin < t1) && (tmax > t0)) return {tmin, tmax};
-            }
-        }
-        if (std::isinf(tzmin)) {
-            tzmin = tymin;
-            tzmax = tymax;
-        }
-    }
+    // if (std::isinf(tmin)) {
+    //     if (std::isinf(tymin)) {
+    //         tmin = tzmin;
+    //         tmax = tzmax;
+    //         if ((tmin < t1) && (tmax > t0)) return {tmin, tmax};
+    //         // tymin = tzmin;
+    //         // tymax = tzmax;
+    //     } else {
+    //         tmin = tymin;
+    //         tmax = tymax;
+    //     }
+    //     if (std::isinf(tzmin)) {
+    //         tmin = tymin;
+    //         tmax = tymax;
+    //         if ((tmin < t1) && (tmax > t0)) return {tmin, tmax};
+    //         // tzmin = tymin;
+    //         // tzmax = tymax;
+    //     } else {
+    //         tmin = tzmin;
+    //         tmax = tzmax;
+    //     }
+    // } else {
+    //     if (std::isinf(tymin)) {
+    //         tymin = tmin;
+    //         tymax = tmax;
+    //         if (std::isinf(tzmin)) {
+    //             tzmin = tmin;
+    //             tzmax = tmax;
+    //             if ((tmin < t1) && (tmax > t0)) return {tmin, tmax};
+    //         }
+    //     }
+    //     if (std::isinf(tzmin)) {
+    //         tzmin = tymin;
+    //         tzmax = tymax;
+    //     }
+    // }
     if ((tmin > tymax) || (tymin > tmax)) return {};
     if (tymin > tmin) tmin = tymin;
     if (tymax < tmax) tmax = tymax;
